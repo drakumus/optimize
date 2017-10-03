@@ -683,7 +683,9 @@ void pinwheelRoll211(pixel *src, pixel *dest)
   pixel *dest1_0;
   pixel *dest1_1;
 
-  unsigned short color0_0, color0_1, color1_0, color1_1, size = src->dim/2, qi_size = 0, qj_size = 0;
+  int dim = src->dim;
+
+  unsigned short color0_0, color0_1, color1_0, color1_1, size = dim/2, qi_size = 0, qj_size = 0;
   unsigned int src_color0_0, src_color0_1, src_color1_0, src_color1_1;
 
   //0
@@ -691,14 +693,14 @@ void pinwheelRoll211(pixel *src, pixel *dest)
     for (j = 0; j < size; j+=2) 
     {    
       //printf("%d\t%d\n", qj*size, qj_size);
-      s_idx0_0 = RIDX(i, j, src->dim);
-      s_idx0_1 = RIDX((i+1), j, src->dim);
-      d_idx0_0 = RIDX(size - 1 - j, i, src->dim);
-      d_idx0_1 = RIDX(size - 1 - j, (i+1), src->dim);
-      s_idx1_0 = RIDX(i, (j+1), src->dim);
-      s_idx1_1 = RIDX((i+1), (j+1), src->dim);
-      d_idx1_0 = RIDX(size - 1 - (j+1), i, src->dim);
-      d_idx1_1 = RIDX(size - 1 - (j+1), (i+1), src->dim);
+      s_idx0_0 = RIDX(i, j, dim);
+      s_idx0_1 = RIDX((i+1), j, dim);
+      d_idx0_0 = RIDX(size - 1 - j, i, dim);
+      d_idx0_1 = RIDX(size - 1 - j, (i+1), dim);
+      s_idx1_0 = RIDX(i, (j+1), dim);
+      s_idx1_1 = RIDX((i+1), (j+1), dim);
+      d_idx1_0 = RIDX(size - 1 - (j+1), i, dim);
+      d_idx1_1 = RIDX(size - 1 - (j+1), (i+1), dim);
       
       src_load0_0 = src[s_idx0_0];//1 load on src
       src_load0_1 = src[s_idx0_1];
@@ -748,14 +750,14 @@ void pinwheelRoll211(pixel *src, pixel *dest)
     for (j = 0; j < size; j+=2) 
     {    
       //printf("%d\t%d\n", qj*size, qj_size);
-      s_idx0_0 = RIDX(qj_size + i, j, src->dim);
-      s_idx0_1 = RIDX(qj_size + (i+1), j, src->dim);
-      d_idx0_0 = RIDX(qj_size + size - 1 - j, i, src->dim);
-      d_idx0_1 = RIDX(qj_size + size - 1 - j, (i+1), src->dim);
-      s_idx1_0 = RIDX(qj_size + i, (j+1), src->dim);
-      s_idx1_1 = RIDX(qj_size + (i+1), (j+1), src->dim);
-      d_idx1_0 = RIDX(qj_size + size - 1 - (j+1), i, src->dim);
-      d_idx1_1 = RIDX(qj_size + size - 1 - (j+1), (i+1), src->dim);
+      s_idx0_0 = RIDX(qj_size + i, j, dim);
+      s_idx0_1 = RIDX(qj_size + (i+1), j, dim);
+      d_idx0_0 = RIDX(qj_size + size - 1 - j, i, dim);
+      d_idx0_1 = RIDX(qj_size + size - 1 - j, (i+1), dim);
+      s_idx1_0 = RIDX(qj_size + i, (j+1), dim);
+      s_idx1_1 = RIDX(qj_size + (i+1), (j+1), dim);
+      d_idx1_0 = RIDX(qj_size + size - 1 - (j+1), i, dim);
+      d_idx1_1 = RIDX(qj_size + size - 1 - (j+1), (i+1), dim);
       
       src_load0_0 = src[s_idx0_0];//1 load on src
       src_load0_1 = src[s_idx0_1];
@@ -803,14 +805,14 @@ void pinwheelRoll211(pixel *src, pixel *dest)
     for (j = 0; j < size; j+=2) 
     {    
       //printf("%d\t%d\n", qj*size, qj_size);
-      s_idx0_0 = RIDX(i, j + qi_size, src->dim);
-      s_idx0_1 = RIDX((i+1), j + qi_size, src->dim);
-      d_idx0_0 = RIDX(size - 1 - j, i + qi_size, src->dim);
-      d_idx0_1 = RIDX(size - 1 - j, (i+1) + qi_size, src->dim);
-      s_idx1_0 = RIDX(i, (j+1) + qi_size, src->dim);
-      s_idx1_1 = RIDX((i+1), (j+1) + qi_size, src->dim);
-      d_idx1_0 = RIDX(size - 1 - (j+1), i + qi_size, src->dim);
-      d_idx1_1 = RIDX(size - 1 - (j+1), (i+1) + qi_size, src->dim);
+      s_idx0_0 = RIDX(i, j + qi_size, dim);
+      s_idx0_1 = RIDX((i+1), j + qi_size, dim);
+      d_idx0_0 = RIDX(size - 1 - j, i + qi_size, dim);
+      d_idx0_1 = RIDX(size - 1 - j, (i+1) + qi_size, dim);
+      s_idx1_0 = RIDX(i, (j+1) + qi_size, dim);
+      s_idx1_1 = RIDX((i+1), (j+1) + qi_size, dim);
+      d_idx1_0 = RIDX(size - 1 - (j+1), i + qi_size, dim);
+      d_idx1_1 = RIDX(size - 1 - (j+1), (i+1) + qi_size, dim);
       
       src_load0_0 = src[s_idx0_0];//1 load on src
       src_load0_1 = src[s_idx0_1];
@@ -858,14 +860,14 @@ void pinwheelRoll211(pixel *src, pixel *dest)
     for (j = 0; j < size; j+=2) 
     {    
       //printf("%d\t%d\n", qj*size, qj_size);
-      s_idx0_0 = RIDX(qj_size + i, j + qi_size, src->dim);
-      s_idx0_1 = RIDX(qj_size + (i+1), j + qi_size, src->dim);
-      d_idx0_0 = RIDX(qj_size + size - 1 - j, i + qi_size, src->dim);
-      d_idx0_1 = RIDX(qj_size + size - 1 - j, (i+1) + qi_size, src->dim);
-      s_idx1_0 = RIDX(qj_size + i, (j+1) + qi_size, src->dim);
-      s_idx1_1 = RIDX(qj_size + (i+1), (j+1) + qi_size, src->dim);
-      d_idx1_0 = RIDX(qj_size + size - 1 - (j+1), i + qi_size, src->dim);
-      d_idx1_1 = RIDX(qj_size + size - 1 - (j+1), (i+1) + qi_size, src->dim);
+      s_idx0_0 = RIDX(qj_size + i, j + qi_size, dim);
+      s_idx0_1 = RIDX(qj_size + (i+1), j + qi_size, dim);
+      d_idx0_0 = RIDX(qj_size + size - 1 - j, i + qi_size, dim);
+      d_idx0_1 = RIDX(qj_size + size - 1 - j, (i+1) + qi_size, dim);
+      s_idx1_0 = RIDX(qj_size + i, (j+1) + qi_size, dim);
+      s_idx1_1 = RIDX(qj_size + (i+1), (j+1) + qi_size, dim);
+      d_idx1_0 = RIDX(qj_size + size - 1 - (j+1), i + qi_size, dim);
+      d_idx1_1 = RIDX(qj_size + size - 1 - (j+1), (i+1) + qi_size, dim);
       
       src_load0_0 = src[s_idx0_0];//1 load on src
       src_load0_1 = src[s_idx0_1];
