@@ -684,39 +684,36 @@ void pinwheelRoll211(pixel *src, pixel *dest)
   pixel *dest1_1;
 
   unsigned short color0_0, color0_1, color1_0, color1_1, size = src->dim/2, qi_size = 0, qj_size = 0;
-    /* qi & qj are column and row of quadrant
-       i & j are column and row within quadrant */
-  
-    /* Loop over 4 quadrants: */
-      /* Loop within quadrant: */
+  unsigned int src_color0_0, src_color0_1, src_color1_0, src_color1_1;
+
   //0
   for (i = 0; i < size; i+=2){
     for (j = 0; j < size; j+=2) 
     {    
       //printf("%d\t%d\n", qj*size, qj_size);
-      s_idx0_0 = RIDX(qj_size + i, j + qi_size, src->dim);
-      s_idx0_1 = RIDX(qj_size + (i+1), j + qi_size, src->dim);
-      d_idx0_0 = RIDX(qj_size + size - 1 - j, i + qi_size, src->dim);
-      d_idx0_1 = RIDX(qj_size + size - 1 - j, (i+1) + qi_size, src->dim);
-      s_idx1_0 = RIDX(qj_size + i, (j+1) + qi_size, src->dim);
-      s_idx1_1 = RIDX(qj_size + (i+1), (j+1) + qi_size, src->dim);
-      d_idx1_0 = RIDX(qj_size + size - 1 - (j+1), i + qi_size, src->dim);
-      d_idx1_1 = RIDX(qj_size + size - 1 - (j+1), (i+1) + qi_size, src->dim);
+      s_idx0_0 = RIDX(i, j, src->dim);
+      s_idx0_1 = RIDX((i+1), j, src->dim);
+      d_idx0_0 = RIDX(size - 1 - j, i, src->dim);
+      d_idx0_1 = RIDX(size - 1 - j, (i+1), src->dim);
+      s_idx1_0 = RIDX(i, (j+1), src->dim);
+      s_idx1_1 = RIDX((i+1), (j+1), src->dim);
+      d_idx1_0 = RIDX(size - 1 - (j+1), i, src->dim);
+      d_idx1_1 = RIDX(size - 1 - (j+1), (i+1), src->dim);
       
       src_load0_0 = src[s_idx0_0];//1 load on src
       src_load0_1 = src[s_idx0_1];
       src_load1_0 = src[s_idx1_0];
       src_load1_1 = src[s_idx1_1];
-      unsigned int src_color0_0 = (src_load0_0.red
+      src_color0_0 = (src_load0_0.red
         + src_load0_0.green
         + src_load0_0.blue);
-      unsigned int src_color0_1 = (src_load0_1.red
+      src_color0_1 = (src_load0_1.red
         + src_load0_1.green
         + src_load0_1.blue);
-      unsigned int src_color1_0 = (src_load1_0.red
+      src_color1_0 = (src_load1_0.red
         + src_load1_0.green
         + src_load1_0.blue);
-      unsigned int src_color1_1 = (src_load1_1.red
+      src_color1_1 = (src_load1_1.red
         + src_load1_1.green
         + src_load1_1.blue);
       
@@ -724,10 +721,12 @@ void pinwheelRoll211(pixel *src, pixel *dest)
       color0_1 = src_color0_1/3;
       color1_0 = src_color1_0/3;
       color1_1 = src_color1_1/3;
+
       dest0_0 = &dest[d_idx0_0];
       dest0_1 = &dest[d_idx0_1];
       dest1_0 = &dest[d_idx1_0];
       dest1_1 = &dest[d_idx1_1];
+
       dest0_0->red = color0_0;
       dest0_0->green = color0_0;
       dest0_0->blue = color0_0;
@@ -749,29 +748,29 @@ void pinwheelRoll211(pixel *src, pixel *dest)
     for (j = 0; j < size; j+=2) 
     {    
       //printf("%d\t%d\n", qj*size, qj_size);
-      s_idx0_0 = RIDX(qj_size + i, j + qi_size, src->dim);
-      s_idx0_1 = RIDX(qj_size + (i+1), j + qi_size, src->dim);
-      d_idx0_0 = RIDX(qj_size + size - 1 - j, i + qi_size, src->dim);
-      d_idx0_1 = RIDX(qj_size + size - 1 - j, (i+1) + qi_size, src->dim);
-      s_idx1_0 = RIDX(qj_size + i, (j+1) + qi_size, src->dim);
-      s_idx1_1 = RIDX(qj_size + (i+1), (j+1) + qi_size, src->dim);
-      d_idx1_0 = RIDX(qj_size + size - 1 - (j+1), i + qi_size, src->dim);
-      d_idx1_1 = RIDX(qj_size + size - 1 - (j+1), (i+1) + qi_size, src->dim);
+      s_idx0_0 = RIDX(qj_size + i, j, src->dim);
+      s_idx0_1 = RIDX(qj_size + (i+1), j, src->dim);
+      d_idx0_0 = RIDX(qj_size + size - 1 - j, i, src->dim);
+      d_idx0_1 = RIDX(qj_size + size - 1 - j, (i+1), src->dim);
+      s_idx1_0 = RIDX(qj_size + i, (j+1), src->dim);
+      s_idx1_1 = RIDX(qj_size + (i+1), (j+1), src->dim);
+      d_idx1_0 = RIDX(qj_size + size - 1 - (j+1), i, src->dim);
+      d_idx1_1 = RIDX(qj_size + size - 1 - (j+1), (i+1), src->dim);
       
       src_load0_0 = src[s_idx0_0];//1 load on src
       src_load0_1 = src[s_idx0_1];
       src_load1_0 = src[s_idx1_0];
       src_load1_1 = src[s_idx1_1];
-      unsigned int src_color0_0 = (src_load0_0.red
+      src_color0_0 = (src_load0_0.red
         + src_load0_0.green
         + src_load0_0.blue);
-      unsigned int src_color0_1 = (src_load0_1.red
+      src_color0_1 = (src_load0_1.red
         + src_load0_1.green
         + src_load0_1.blue);
-      unsigned int src_color1_0 = (src_load1_0.red
+      src_color1_0 = (src_load1_0.red
         + src_load1_0.green
         + src_load1_0.blue);
-      unsigned int src_color1_1 = (src_load1_1.red
+      src_color1_1 = (src_load1_1.red
         + src_load1_1.green
         + src_load1_1.blue);
       
@@ -804,29 +803,29 @@ void pinwheelRoll211(pixel *src, pixel *dest)
     for (j = 0; j < size; j+=2) 
     {    
       //printf("%d\t%d\n", qj*size, qj_size);
-      s_idx0_0 = RIDX(qj_size + i, j + qi_size, src->dim);
-      s_idx0_1 = RIDX(qj_size + (i+1), j + qi_size, src->dim);
-      d_idx0_0 = RIDX(qj_size + size - 1 - j, i + qi_size, src->dim);
-      d_idx0_1 = RIDX(qj_size + size - 1 - j, (i+1) + qi_size, src->dim);
-      s_idx1_0 = RIDX(qj_size + i, (j+1) + qi_size, src->dim);
-      s_idx1_1 = RIDX(qj_size + (i+1), (j+1) + qi_size, src->dim);
-      d_idx1_0 = RIDX(qj_size + size - 1 - (j+1), i + qi_size, src->dim);
-      d_idx1_1 = RIDX(qj_size + size - 1 - (j+1), (i+1) + qi_size, src->dim);
+      s_idx0_0 = RIDX(i, j + qi_size, src->dim);
+      s_idx0_1 = RIDX((i+1), j + qi_size, src->dim);
+      d_idx0_0 = RIDX(size - 1 - j, i + qi_size, src->dim);
+      d_idx0_1 = RIDX(size - 1 - j, (i+1) + qi_size, src->dim);
+      s_idx1_0 = RIDX(i, (j+1) + qi_size, src->dim);
+      s_idx1_1 = RIDX((i+1), (j+1) + qi_size, src->dim);
+      d_idx1_0 = RIDX(size - 1 - (j+1), i + qi_size, src->dim);
+      d_idx1_1 = RIDX(size - 1 - (j+1), (i+1) + qi_size, src->dim);
       
       src_load0_0 = src[s_idx0_0];//1 load on src
       src_load0_1 = src[s_idx0_1];
       src_load1_0 = src[s_idx1_0];
       src_load1_1 = src[s_idx1_1];
-      unsigned int src_color0_0 = (src_load0_0.red
+      src_color0_0 = (src_load0_0.red
         + src_load0_0.green
         + src_load0_0.blue);
-      unsigned int src_color0_1 = (src_load0_1.red
+      src_color0_1 = (src_load0_1.red
         + src_load0_1.green
         + src_load0_1.blue);
-      unsigned int src_color1_0 = (src_load1_0.red
+      src_color1_0 = (src_load1_0.red
         + src_load1_0.green
         + src_load1_0.blue);
-      unsigned int src_color1_1 = (src_load1_1.red
+      src_color1_1 = (src_load1_1.red
         + src_load1_1.green
         + src_load1_1.blue);
       
@@ -872,16 +871,16 @@ void pinwheelRoll211(pixel *src, pixel *dest)
       src_load0_1 = src[s_idx0_1];
       src_load1_0 = src[s_idx1_0];
       src_load1_1 = src[s_idx1_1];
-      unsigned int src_color0_0 = (src_load0_0.red
+      src_color0_0 = (src_load0_0.red
         + src_load0_0.green
         + src_load0_0.blue);
-      unsigned int src_color0_1 = (src_load0_1.red
+      src_color0_1 = (src_load0_1.red
         + src_load0_1.green
         + src_load0_1.blue);
-      unsigned int src_color1_0 = (src_load1_0.red
+      src_color1_0 = (src_load1_0.red
         + src_load1_0.green
         + src_load1_0.blue);
-      unsigned int src_color1_1 = (src_load1_1.red
+      src_color1_1 = (src_load1_1.red
         + src_load1_1.green
         + src_load1_1.blue);
       
