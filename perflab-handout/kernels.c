@@ -611,11 +611,6 @@ void pinwheelRoll21(pixel *src, pixel *dest)
             + src_load1_1.green
             + src_load1_1.blue);
           
-          // color0_0 = (src_color0_0 >> 2) - src_color0_0;
-          // color0_1 = (src_color0_1 >> 2) - src_color0_1;
-          // color1_0 = (src_color1_0 >> 2) - src_color1_0;
-          // color1_1 = (src_color1_1 >> 2) - src_color1_1;
-          
           color0_0 = src_color0_0/3;
           color0_1 = src_color0_1/3;
           color1_0 = src_color1_0/3;
@@ -625,7 +620,7 @@ void pinwheelRoll21(pixel *src, pixel *dest)
           dest0_1 = &dest[d_idx0_1];
           dest1_0 = &dest[d_idx1_0];
           dest1_1 = &dest[d_idx1_1];
-          //printf("%f %f", src_color0_0, src_color0_0);
+
           dest0_0->red = color0_0;
           dest0_0->green = color0_0;
           dest0_0->blue = color0_0;
@@ -639,7 +634,6 @@ void pinwheelRoll21(pixel *src, pixel *dest)
           dest1_1->green = color1_1;
           dest1_1->blue = color1_1;  
         }
-        //printf("itter: %d, size: %d, j: %d\n",i*j , size, j);
         
         for (; j < size; j++)
         {
@@ -669,6 +663,248 @@ void pinwheelRoll21(pixel *src, pixel *dest)
         dest[d_idx0_0].green = color0_0;
         dest[d_idx0_0].blue = color0_0;
       }
+    }
+  }
+}
+
+char pinwheel_descr211[] = "pinwheel: unroll2.1.1";
+void pinwheelRoll211(pixel *src, pixel *dest)
+{
+  unsigned int i, j, s_idx0_0, 
+               s_idx0_1, s_idx1_0, s_idx1_1, 
+               d_idx0_0, d_idx0_1, d_idx1_0, d_idx1_1;
+  pixel src_load0_0;
+  pixel src_load0_1;
+  pixel src_load1_0;
+  pixel src_load1_1;
+
+  pixel *dest0_0;
+  pixel *dest0_1;
+  pixel *dest1_0;
+  pixel *dest1_1;
+
+  unsigned short color0_0, color0_1, color1_0, color1_1, size = src->dim/2, qi_size = 0, qj_size = 0;
+    /* qi & qj are column and row of quadrant
+       i & j are column and row within quadrant */
+  
+    /* Loop over 4 quadrants: */
+      /* Loop within quadrant: */
+  //0
+  for (i = 0; i < size; i+=2){
+    for (j = 0; j < size; j+=2) 
+    {    
+      //printf("%d\t%d\n", qj*size, qj_size);
+      s_idx0_0 = RIDX(qj_size + i, j + qi_size, src->dim);
+      s_idx0_1 = RIDX(qj_size + (i+1), j + qi_size, src->dim);
+      d_idx0_0 = RIDX(qj_size + size - 1 - j, i + qi_size, src->dim);
+      d_idx0_1 = RIDX(qj_size + size - 1 - j, (i+1) + qi_size, src->dim);
+      s_idx1_0 = RIDX(qj_size + i, (j+1) + qi_size, src->dim);
+      s_idx1_1 = RIDX(qj_size + (i+1), (j+1) + qi_size, src->dim);
+      d_idx1_0 = RIDX(qj_size + size - 1 - (j+1), i + qi_size, src->dim);
+      d_idx1_1 = RIDX(qj_size + size - 1 - (j+1), (i+1) + qi_size, src->dim);
+      
+      src_load0_0 = src[s_idx0_0];//1 load on src
+      src_load0_1 = src[s_idx0_1];
+      src_load1_0 = src[s_idx1_0];
+      src_load1_1 = src[s_idx1_1];
+      unsigned int src_color0_0 = (src_load0_0.red
+        + src_load0_0.green
+        + src_load0_0.blue);
+      unsigned int src_color0_1 = (src_load0_1.red
+        + src_load0_1.green
+        + src_load0_1.blue);
+      unsigned int src_color1_0 = (src_load1_0.red
+        + src_load1_0.green
+        + src_load1_0.blue);
+      unsigned int src_color1_1 = (src_load1_1.red
+        + src_load1_1.green
+        + src_load1_1.blue);
+      
+      color0_0 = src_color0_0/3;
+      color0_1 = src_color0_1/3;
+      color1_0 = src_color1_0/3;
+      color1_1 = src_color1_1/3;
+      dest0_0 = &dest[d_idx0_0];
+      dest0_1 = &dest[d_idx0_1];
+      dest1_0 = &dest[d_idx1_0];
+      dest1_1 = &dest[d_idx1_1];
+      dest0_0->red = color0_0;
+      dest0_0->green = color0_0;
+      dest0_0->blue = color0_0;
+      dest0_1->red = color0_1;
+      dest0_1->green = color0_1;
+      dest0_1->blue =  color0_1;
+      dest1_0->red =  color1_0;
+      dest1_0->green =  color1_0;
+      dest1_0->blue = color1_0;
+      dest1_1->red = color1_1;
+      dest1_1->green = color1_1;
+      dest1_1->blue = color1_1;  
+    }
+  }
+  //1
+  qi_size = 0;
+  qj_size = size;
+  for (i = 0; i < size; i+=2){
+    for (j = 0; j < size; j+=2) 
+    {    
+      //printf("%d\t%d\n", qj*size, qj_size);
+      s_idx0_0 = RIDX(qj_size + i, j + qi_size, src->dim);
+      s_idx0_1 = RIDX(qj_size + (i+1), j + qi_size, src->dim);
+      d_idx0_0 = RIDX(qj_size + size - 1 - j, i + qi_size, src->dim);
+      d_idx0_1 = RIDX(qj_size + size - 1 - j, (i+1) + qi_size, src->dim);
+      s_idx1_0 = RIDX(qj_size + i, (j+1) + qi_size, src->dim);
+      s_idx1_1 = RIDX(qj_size + (i+1), (j+1) + qi_size, src->dim);
+      d_idx1_0 = RIDX(qj_size + size - 1 - (j+1), i + qi_size, src->dim);
+      d_idx1_1 = RIDX(qj_size + size - 1 - (j+1), (i+1) + qi_size, src->dim);
+      
+      src_load0_0 = src[s_idx0_0];//1 load on src
+      src_load0_1 = src[s_idx0_1];
+      src_load1_0 = src[s_idx1_0];
+      src_load1_1 = src[s_idx1_1];
+      unsigned int src_color0_0 = (src_load0_0.red
+        + src_load0_0.green
+        + src_load0_0.blue);
+      unsigned int src_color0_1 = (src_load0_1.red
+        + src_load0_1.green
+        + src_load0_1.blue);
+      unsigned int src_color1_0 = (src_load1_0.red
+        + src_load1_0.green
+        + src_load1_0.blue);
+      unsigned int src_color1_1 = (src_load1_1.red
+        + src_load1_1.green
+        + src_load1_1.blue);
+      
+      color0_0 = src_color0_0/3;
+      color0_1 = src_color0_1/3;
+      color1_0 = src_color1_0/3;
+      color1_1 = src_color1_1/3;
+      dest0_0 = &dest[d_idx0_0];
+      dest0_1 = &dest[d_idx0_1];
+      dest1_0 = &dest[d_idx1_0];
+      dest1_1 = &dest[d_idx1_1];
+      dest0_0->red = color0_0;
+      dest0_0->green = color0_0;
+      dest0_0->blue = color0_0;
+      dest0_1->red = color0_1;
+      dest0_1->green = color0_1;
+      dest0_1->blue =  color0_1;
+      dest1_0->red =  color1_0;
+      dest1_0->green =  color1_0;
+      dest1_0->blue = color1_0;
+      dest1_1->red = color1_1;
+      dest1_1->green = color1_1;
+      dest1_1->blue = color1_1;  
+    }
+  }
+  //2
+  qi_size = size;
+  qj_size = 0;
+  for (i = 0; i < size; i+=2){
+    for (j = 0; j < size; j+=2) 
+    {    
+      //printf("%d\t%d\n", qj*size, qj_size);
+      s_idx0_0 = RIDX(qj_size + i, j + qi_size, src->dim);
+      s_idx0_1 = RIDX(qj_size + (i+1), j + qi_size, src->dim);
+      d_idx0_0 = RIDX(qj_size + size - 1 - j, i + qi_size, src->dim);
+      d_idx0_1 = RIDX(qj_size + size - 1 - j, (i+1) + qi_size, src->dim);
+      s_idx1_0 = RIDX(qj_size + i, (j+1) + qi_size, src->dim);
+      s_idx1_1 = RIDX(qj_size + (i+1), (j+1) + qi_size, src->dim);
+      d_idx1_0 = RIDX(qj_size + size - 1 - (j+1), i + qi_size, src->dim);
+      d_idx1_1 = RIDX(qj_size + size - 1 - (j+1), (i+1) + qi_size, src->dim);
+      
+      src_load0_0 = src[s_idx0_0];//1 load on src
+      src_load0_1 = src[s_idx0_1];
+      src_load1_0 = src[s_idx1_0];
+      src_load1_1 = src[s_idx1_1];
+      unsigned int src_color0_0 = (src_load0_0.red
+        + src_load0_0.green
+        + src_load0_0.blue);
+      unsigned int src_color0_1 = (src_load0_1.red
+        + src_load0_1.green
+        + src_load0_1.blue);
+      unsigned int src_color1_0 = (src_load1_0.red
+        + src_load1_0.green
+        + src_load1_0.blue);
+      unsigned int src_color1_1 = (src_load1_1.red
+        + src_load1_1.green
+        + src_load1_1.blue);
+      
+      color0_0 = src_color0_0/3;
+      color0_1 = src_color0_1/3;
+      color1_0 = src_color1_0/3;
+      color1_1 = src_color1_1/3;
+      dest0_0 = &dest[d_idx0_0];
+      dest0_1 = &dest[d_idx0_1];
+      dest1_0 = &dest[d_idx1_0];
+      dest1_1 = &dest[d_idx1_1];
+      dest0_0->red = color0_0;
+      dest0_0->green = color0_0;
+      dest0_0->blue = color0_0;
+      dest0_1->red = color0_1;
+      dest0_1->green = color0_1;
+      dest0_1->blue =  color0_1;
+      dest1_0->red =  color1_0;
+      dest1_0->green =  color1_0;
+      dest1_0->blue = color1_0;
+      dest1_1->red = color1_1;
+      dest1_1->green = color1_1;
+      dest1_1->blue = color1_1;  
+    }
+  }
+  //3
+  qi_size = size;
+  qj_size = size;
+  for (i = 0; i < size; i+=2){
+    for (j = 0; j < size; j+=2) 
+    {    
+      //printf("%d\t%d\n", qj*size, qj_size);
+      s_idx0_0 = RIDX(qj_size + i, j + qi_size, src->dim);
+      s_idx0_1 = RIDX(qj_size + (i+1), j + qi_size, src->dim);
+      d_idx0_0 = RIDX(qj_size + size - 1 - j, i + qi_size, src->dim);
+      d_idx0_1 = RIDX(qj_size + size - 1 - j, (i+1) + qi_size, src->dim);
+      s_idx1_0 = RIDX(qj_size + i, (j+1) + qi_size, src->dim);
+      s_idx1_1 = RIDX(qj_size + (i+1), (j+1) + qi_size, src->dim);
+      d_idx1_0 = RIDX(qj_size + size - 1 - (j+1), i + qi_size, src->dim);
+      d_idx1_1 = RIDX(qj_size + size - 1 - (j+1), (i+1) + qi_size, src->dim);
+      
+      src_load0_0 = src[s_idx0_0];//1 load on src
+      src_load0_1 = src[s_idx0_1];
+      src_load1_0 = src[s_idx1_0];
+      src_load1_1 = src[s_idx1_1];
+      unsigned int src_color0_0 = (src_load0_0.red
+        + src_load0_0.green
+        + src_load0_0.blue);
+      unsigned int src_color0_1 = (src_load0_1.red
+        + src_load0_1.green
+        + src_load0_1.blue);
+      unsigned int src_color1_0 = (src_load1_0.red
+        + src_load1_0.green
+        + src_load1_0.blue);
+      unsigned int src_color1_1 = (src_load1_1.red
+        + src_load1_1.green
+        + src_load1_1.blue);
+      
+      color0_0 = src_color0_0/3;
+      color0_1 = src_color0_1/3;
+      color1_0 = src_color1_0/3;
+      color1_1 = src_color1_1/3;
+      dest0_0 = &dest[d_idx0_0];
+      dest0_1 = &dest[d_idx0_1];
+      dest1_0 = &dest[d_idx1_0];
+      dest1_1 = &dest[d_idx1_1];
+      dest0_0->red = color0_0;
+      dest0_0->green = color0_0;
+      dest0_0->blue = color0_0;
+      dest0_1->red = color0_1;
+      dest0_1->green = color0_1;
+      dest0_1->blue =  color0_1;
+      dest1_0->red =  color1_0;
+      dest1_0->green =  color1_0;
+      dest1_0->blue = color1_0;
+      dest1_1->red = color1_1;
+      dest1_1->green = color1_1;
+      dest1_1->blue = color1_1;  
     }
   }
 }
@@ -839,11 +1075,12 @@ void pinwheelRollSpicy(pixel *src, pixel *dest)
 void register_pinwheel_functions() {
   //add_pinwheel_function(&pinwheel, pinwheel_descr);
   //add_pinwheel_function(&naive_pinwheel, naive_pinwheel_descr);
-  add_pinwheel_function(&pinwheelUpper, pinwheel_descrUpperUnroll);
+  //add_pinwheel_function(&pinwheelUpper, pinwheel_descrUpperUnroll);
   //add_pinwheel_function(&pinwheelRoll1, pinwheel_descr1);
   //add_pinwheel_function(&pinwheelRoll1_1, pinwheel_descr1_1);
   //add_pinwheel_function(&pinwheelRoll2, pinwheel_descr2);
   add_pinwheel_function(&pinwheelRoll21, pinwheel_descr21);
+  add_pinwheel_function(&pinwheelRoll211, pinwheel_descr211);
   //add_pinwheel_function(&pinwheelRoll22, pinwheel_descr22);
   //add_pinwheel_function(&pinwheelRollSpicy, pinwheel_descrSpicy);
 }
