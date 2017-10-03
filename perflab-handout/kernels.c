@@ -1149,29 +1149,33 @@ static pixel weighted_combo(int dim, int i, int j, pixel *src)
   pixel p;
   double weight;
   int ii_i;
+  int dim_index;
 
   for (ii=0; ii < 3; ii++)
   {
     ii_i = i + ii;
-    if ((ii_i < dim) && (j < dim))
+	if(ii_i >= dim) break;    
+
+	dim_index = ii_i*dim + 1;
+    if (j < dim)
     {
-      p = src[RIDX(ii_i,j,dim)];
+      p = src[dim_index+j];
       weight = weights[ii][0];
       sum.red += (int) p.red * weight;
       sum.green += (int) p.green * weight;
       sum.blue += (int) p.blue * weight;
     }
-    if ((ii_i < dim) && (j + 1 < dim))
+    if (j + 1 < dim)
     {
-      p = src[RIDX(ii_i,j+1,dim)];
+      p = src[dim_index+j+1];
       weight = weights[ii][1];
       sum.red += (int) p.red * weight;
       sum.green += (int) p.green * weight;
       sum.blue += (int) p.blue * weight;
     }
-    if ((ii_i < dim) && (j + 2 < dim))
+    if (j + 2 < dim)
     {
-      p = src[RIDX(ii_i,j+2,dim)];
+      p = src[dim_index+j+2];
       weight = weights[ii][2];
       sum.red += (int) p.red * weight;
       sum.green += (int) p.green * weight;
@@ -1182,6 +1186,62 @@ static pixel weighted_combo(int dim, int i, int j, pixel *src)
   current_pixel.red = (unsigned short)sum.red;
   current_pixel.green = (unsigned short)sum.green;
   current_pixel.blue = (unsigned short)sum.blue;
+  
+  return current_pixel;
+}
+
+static pixel weighted_combo1(int dim, int i, int j, pixel *src) 
+{
+  int ii, jj;
+  pixel_sum sum;
+  pixel current_pixel;
+  int weights[3][3] = { { 60, 3, 0 },
+                        { 3, 30, 3 },
+                        { 0, 3, 10 } };
+
+  initialize_pixel_sum(&sum);
+
+  pixel p;
+  int weight;
+  int ii_i;
+
+  for (ii=0; ii < 3; ii++)
+  {
+    ii_i = i + ii;
+	if(ii_i >= dim) break;    
+    if (j < dim)
+    {
+      p = src[RIDX(ii_i,j,dim)];
+      weight = weights[ii][0];
+      sum.red += (int) p.red * weight;
+      sum.green += (int) p.green * weight;
+      sum.blue += (int) p.blue * weight;
+    }
+    if (j + 1 < dim)
+    {
+      p = src[RIDX(ii_i,j+1,dim)];
+      weight = weights[ii][1];
+      sum.red += (int) p.red * weight;
+      sum.green += (int) p.green * weight;
+      sum.blue += (int) p.blue * weight;
+    }
+    if (j + 2 < dim)
+    {
+      p = src[RIDX(ii_i,j+2,dim)];
+      weight = weights[ii][2];
+      sum.red += (int) p.red * weight;
+      sum.green += (int) p.green * weight;
+      sum.blue += (int) p.blue * weight;
+    }
+  }
+  //assign_sum_to_pixel(&current_pixel, sum);
+  double red = (double) sum.red/100.0;
+  double green = (double) sum.green/100.0;
+  double blue = (double) sum.blue/100.0;
+
+  current_pixel.red = (unsigned short)red;
+  current_pixel.green = (unsigned short)green;
+  current_pixel.blue = (unsigned short)blue;
   
   return current_pixel;
 }
