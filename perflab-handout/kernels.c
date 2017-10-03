@@ -890,10 +890,12 @@ void pinwheelRoll211(pixel *src, pixel *dest)
       color0_1 = src_color0_1/3;
       color1_0 = src_color1_0/3;
       color1_1 = src_color1_1/3;
+
       dest0_0 = &dest[d_idx0_0];
       dest0_1 = &dest[d_idx0_1];
       dest1_0 = &dest[d_idx1_0];
       dest1_1 = &dest[d_idx1_1];
+
       dest0_0->red = color0_0;
       dest0_0->green = color0_0;
       dest0_0->blue = color0_0;
@@ -1080,8 +1082,8 @@ void register_pinwheel_functions() {
   //add_pinwheel_function(&pinwheelRoll1, pinwheel_descr1);
   //add_pinwheel_function(&pinwheelRoll1_1, pinwheel_descr1_1);
   //add_pinwheel_function(&pinwheelRoll2, pinwheel_descr2);
-  add_pinwheel_function(&pinwheelRoll21, pinwheel_descr21);
-  add_pinwheel_function(&pinwheelRoll211, pinwheel_descr211);
+  //*add_pinwheel_function(&pinwheelRoll21, pinwheel_descr21);
+  //*add_pinwheel_function(&pinwheelRoll211, pinwheel_descr211);
   //add_pinwheel_function(&pinwheelRoll22, pinwheel_descr22);
   //add_pinwheel_function(&pinwheelRollSpicy, pinwheel_descrSpicy);
 }
@@ -1143,15 +1145,44 @@ static pixel weighted_combo(int dim, int i, int j, pixel *src)
                            { 0.00, 0.03, 0.10 } };
 
   initialize_pixel_sum(&sum);
-  for (ii=0; ii < 3; ii++)
-    for (jj=0; jj < 3; jj++) 
-      if ((i + ii < dim) && (j + jj < dim))
-        accumulate_weighted_sum(&sum,
-                                src[RIDX(i+ii,j+jj,dim)],
-                                weights[ii][jj]);
-  
-  assign_sum_to_pixel(&current_pixel, sum);
 
+  pixel p;
+  double weight;
+  int ii_i;
+
+  for (ii=0; ii < 3; ii++)
+  {
+    ii_i = i + ii;
+    if ((ii_i < dim) && (j < dim))
+    {
+      p = src[RIDX(ii_i,j,dim)];
+      weight = weights[ii][0];
+      sum.red += (int) p.red * weight;
+      sum.green += (int) p.green * weight;
+      sum.blue += (int) p.blue * weight;
+    }
+    if ((ii_i < dim) && (j + 1 < dim))
+    {
+      p = src[RIDX(ii_i,j+1,dim)];
+      weight = weights[ii][1];
+      sum.red += (int) p.red * weight;
+      sum.green += (int) p.green * weight;
+      sum.blue += (int) p.blue * weight;
+    }
+    if ((ii_i < dim) && (j + 2 < dim))
+    {
+      p = src[RIDX(ii_i,j+2,dim)];
+      weight = weights[ii][2];
+      sum.red += (int) p.red * weight;
+      sum.green += (int) p.green * weight;
+      sum.blue += (int) p.blue * weight;
+    }
+  }
+  //assign_sum_to_pixel(&current_pixel, sum);
+  current_pixel.red = (unsigned short)sum.red;
+  current_pixel.green = (unsigned short)sum.green;
+  current_pixel.blue = (unsigned short)sum.blue;
+  
   return current_pixel;
 }
 
@@ -1179,7 +1210,19 @@ void naive_motion(pixel *src, pixel *dst)
 char motion_descr[] = "motion: Current working version";
 void motion(pixel *src, pixel *dst) 
 {
-  naive_motion(src, dst);
+  unsigned int i, j;
+  int dim = src->dim;
+  
+  for (i = 0; i < dim; i+=2)
+  {
+    for (j = 0; j < dim; j+=2)
+    {
+      dst[RIDX(i, j, dim)] = weighted_combo(dim, i, j, src);
+      dst[RIDX(i+1, j, dim)] = weighted_combo(dim, i+1, j, src);
+      dst[RIDX(i, j+1, dim)] = weighted_combo(dim, i, j+1, src);
+      dst[RIDX(i+1, j+1, dim)] = weighted_combo(dim, i+1, j+1, src);
+    }
+  }
 }
 
 /********************************************************************* 
@@ -1191,6 +1234,6 @@ void motion(pixel *src, pixel *dst)
  *********************************************************************/
 
 void register_motion_functions() {
-  //add_motion_function(&motion, motion_descr);
-  //add_motion_function(&naive_motion, naive_motion_descr);
+  add_motion_function(&motion, motion_descr);
+  add_motion_function(&naive_motion, naive_motion_descr);
 }
